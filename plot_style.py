@@ -2,10 +2,15 @@
 
 Uso recomendado en notebooks:
 
-    from plot_style import aplicar_estilo_graficos, COLORES_MARCAS
+    from plot_style import (
+        aplicar_estilo_graficos,
+        COLOR_DESTACADO,
+        COLORES_MARCAS,
+    )
     aplicar_estilo_graficos()
 
-Luego puedes reutilizar `COLORES_MARCAS` al construir cada grafico.
+Luego puedes reutilizar `COLORES_MARCAS` al construir cada grafico y
+`COLOR_DESTACADO` cuando necesites resaltar un dato puntual.
 """
 
 from __future__ import annotations
@@ -22,36 +27,68 @@ COLORES_MARCAS = {
 }
 
 
+COLORES_SUMMA = {
+    "azul_marino": "#031843",
+    "verde_agua": "#37968C",
+    "celeste": "#00C1D5",
+    "petroleo": "#00859B",
+    "azul_gris": "#5F92A3",
+    "gris": "#656565",
+    "burdeos": "#78365F",
+}
+
+
 PALETA_BASE = [
-    "#2E8B57",
-    "#D62728",
-    "#F1C40F",
-    "#7D3C98",
-    "#4C78A8",
-    "#F58518",
-    "#72B7B2",
-    "#E45756",
+    COLORES_SUMMA["azul_marino"],
+    COLORES_SUMMA["verde_agua"],
+    COLORES_SUMMA["celeste"],
+    COLORES_SUMMA["petroleo"],
+    COLORES_SUMMA["azul_gris"],
+    COLORES_SUMMA["gris"],
 ]
+# El burdeos se reserva para destacar y no entra al ciclo base.
+
+
+COLOR_PRINCIPAL = COLORES_SUMMA["azul_marino"]
+COLOR_DESTACADO = COLORES_SUMMA["burdeos"]
+COLOR_REJILLA = "#D7E1E6"
+COLOR_BORDE = "#B8C9D2"
 
 
 ESTILO_GRAFICOS = {
     "figure.figsize": (12, 6),
     "figure.dpi": 120,
     "savefig.dpi": 200,
-    "font.family": "Arial",
+    "figure.facecolor": "white",
+    "axes.facecolor": "white",
+    "savefig.facecolor": "white",
+    "font.family": "sans-serif",
+    "font.sans-serif": [
+        "Aptos",
+        "Avenir Next",
+        "Helvetica Neue",
+        "Arial",
+        "DejaVu Sans",
+    ],
     "font.size": 12,
     "axes.titlesize": 18,
     "axes.titleweight": "bold",
     "axes.labelsize": 13,
-    "axes.edgecolor": "#B0B0B0",
+    "axes.titlecolor": COLOR_PRINCIPAL,
+    "axes.labelcolor": COLOR_PRINCIPAL,
+    "text.color": COLOR_PRINCIPAL,
+    "axes.edgecolor": COLOR_BORDE,
     "axes.linewidth": 0.8,
     "axes.spines.top": False,
     "axes.spines.right": False,
     "axes.grid": True,
-    "grid.color": "#D9D9D9",
+    "axes.axisbelow": True,
+    "grid.color": COLOR_REJILLA,
     "grid.linestyle": "--",
     "grid.linewidth": 0.8,
-    "grid.alpha": 0.45,
+    "grid.alpha": 0.6,
+    "xtick.color": COLOR_PRINCIPAL,
+    "ytick.color": COLOR_PRINCIPAL,
     "xtick.labelsize": 11,
     "ytick.labelsize": 11,
     "legend.fontsize": 11,
@@ -73,7 +110,8 @@ def aplicar_estilo_graficos(
     estilo_seaborn:
         Estilo base de seaborn. Por defecto usa "whitegrid".
     palette:
-        Paleta principal. Si no se entrega, usa `PALETA_BASE`.
+        Paleta principal. Si no se entrega, usa `PALETA_BASE`
+        alineada al brandbook de Summa.
     reset:
         Si es True, restablece `rcParams` antes de aplicar el estilo.
     """
@@ -90,7 +128,7 @@ def aplicar_estilo_graficos(
     return rc
 
 
-def color_marca(marca: str, default: str = "#4C78A8") -> str:
+def color_marca(marca: str, default: str = COLOR_PRINCIPAL) -> str:
     """Entrega un color fijo por marca y un fallback si no existe."""
 
     return COLORES_MARCAS.get(marca, default)
@@ -98,7 +136,7 @@ def color_marca(marca: str, default: str = "#4C78A8") -> str:
 
 def paleta_marcas(
     marcas: list[str] | tuple[str, ...],
-    default: str = "#4C78A8",
+    default: str = COLOR_PRINCIPAL,
 ) -> dict[str, str]:
     """Construye una paleta para pasar directo a seaborn."""
 
